@@ -1,0 +1,36 @@
+# Cat3Design Airbus Tiller - USB HID Joystick
+# Vendor: 27dc  Product: 16c0  Serial: HIDHD
+#
+# Fixes: vendor name, joystick tagging, permissions, and stable symlink
+
+# Match the USB device (parent level) — set permissions and symlink
+ACTION=="add|change", SUBSYSTEM=="usb", ATTRS{idVendor}=="27dc", ATTRS{idProduct}=="16c0", \
+    MODE="0660", GROUP="input", TAG+="uaccess", TAG+="udev-acl"
+
+# Match the HID device — override the vendor name
+ACTION=="add|change", SUBSYSTEM=="hid", ATTRS{idVendor}=="27dc", ATTRS{idProduct}=="16c0", \
+    ATTR{country}=="00"
+
+# Match the input device (joystick node) — tag as joystick and create symlink
+ACTION=="add|change", SUBSYSTEM=="input", ATTRS{idVendor}=="27dc", ATTRS{idProduct}=="16c0", \
+    KERNEL=="js*", \
+    ENV{ID_VENDOR}="Cat3Design", \
+    ENV{ID_VENDOR_ID}="27dc", \
+    ENV{ID_MODEL}="Airbus_Tiller", \
+    ENV{ID_MODEL_ID}="16c0", \
+    ENV{ID_INPUT}="1", \
+    ENV{ID_INPUT_JOYSTICK}="1", \
+    MODE="0660", GROUP="input", TAG+="uaccess", TAG+="udev-acl", \
+    SYMLINK+="input/cat3-tiller"
+
+# Match the event node as well for evdev-based applications
+ACTION=="add|change", SUBSYSTEM=="input", ATTRS{idVendor}=="27dc", ATTRS{idProduct}=="16c0", \
+    KERNEL=="event*", \
+    ENV{ID_VENDOR}="Cat3Design", \
+    ENV{ID_VENDOR_ID}="27dc", \
+    ENV{ID_MODEL}="Airbus_Tiller", \
+    ENV{ID_MODEL_ID}="16c0", \
+    ENV{ID_INPUT}="1", \
+    ENV{ID_INPUT_JOYSTICK}="1", \
+    MODE="0660", GROUP="input", TAG+="uaccess", TAG+="udev-acl", \
+    SYMLINK+="input/cat3-tiller-event"

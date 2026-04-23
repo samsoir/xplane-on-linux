@@ -1,0 +1,23 @@
+# Keychron K10 HE - hidraw permissions
+KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="3434", ATTRS{idProduct}=="0ea0", MODE="0660", GROUP="users", TAG+="uaccess", TAG+="udev-acl"
+
+# Keychron Link - hidraw permissions
+KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="3434", ATTRS{idProduct}=="d030", MODE="0660", GROUP="users", TAG+="uaccess", TAG+="udev-acl"
+
+# Keychron K10 HE - prevent joystick detection
+# Remove permissions on js* node so X-Plane cannot open it
+ACTION=="add|change", SUBSYSTEM=="input", ATTRS{idVendor}=="3434", ATTRS{idProduct}=="0ea0", \
+    KERNEL=="js*", ENV{ID_INPUT_JOYSTICK}="0", ENV{ID_INPUT}="0", \
+    MODE="0000", TAG-="uaccess", TAG-="udev-acl", TAG-="seat", \
+    RUN+="/usr/bin/setfacl -b /dev/input/%k"
+ACTION=="add|change", SUBSYSTEM=="input", ATTRS{idVendor}=="3434", ATTRS{idProduct}=="0ea0", \
+    KERNEL=="event*", ENV{ID_INPUT_JOYSTICK}="0"
+
+# Keychron Link - prevent joystick detection
+# Remove permissions on js* node so X-Plane cannot open it
+ACTION=="add|change", SUBSYSTEM=="input", ATTRS{idVendor}=="3434", ATTRS{idProduct}=="d030", \
+    KERNEL=="js*", ENV{ID_INPUT_JOYSTICK}="0", ENV{ID_INPUT}="0", \
+    MODE="0000", TAG-="uaccess", TAG-="udev-acl", TAG-="seat", \
+    RUN+="/usr/bin/setfacl -b /dev/input/%k"
+ACTION=="add|change", SUBSYSTEM=="input", ATTRS{idVendor}=="3434", ATTRS{idProduct}=="d030", \
+    KERNEL=="event*", ENV{ID_INPUT_JOYSTICK}="0"
